@@ -51,8 +51,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/usuario/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/auth/register/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/auth/**").anonymous()
+                .antMatchers(HttpMethod.GET, "/propietario/**").hasAnyRole("ADMIN","PROPIETARIO")
+                .antMatchers(HttpMethod.POST, "/vivienda/").hasRole("PROPIERTARIO")
+                .antMatchers(HttpMethod.PUT, "/vivienda/**").hasAnyRole("ADMIN","PROPIETARIO")
+                .antMatchers(HttpMethod.DELETE, "/vivienda/").hasAnyRole("ADMIN", "PROPIETARIO")
+                .antMatchers(HttpMethod.POST, "/vivienda/**/inmobiliaria/**").hasAnyRole("ADMIN","PROPIETARIO")
+                .antMatchers(HttpMethod.DELETE, "vivienda/**/inmobiliaria/").hasAnyRole("ADMIN","PROPIETARIO")
+                .antMatchers(HttpMethod.POST, "/inmobiliaria/").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/inmobiliaria/**").hasAnyRole("ADMIN","GESTOR")
+                .antMatchers(HttpMethod.DELETE, "/inmobiliaria/**").hasAnyRole("ADMIN","GESTOR")
+                .antMatchers(HttpMethod.GET, "/inmobiliaria/**").hasAnyRole("ADMIN","GESTOR")
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated();
 
