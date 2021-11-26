@@ -2,7 +2,6 @@ package edu.salesianos.triana.RealStateV2.model;
 
 import edu.salesianos.triana.RealStateV2.users.model.Usuario;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
+
 public class Vivienda implements Serializable {
 
 
@@ -30,9 +29,6 @@ public class Vivienda implements Serializable {
     private String latlng;
     private String direccion;
     private String codigoPostal;
-
-
-
     private String poblacion;
     private String provincia;
     private String tipo;
@@ -47,7 +43,8 @@ public class Vivienda implements Serializable {
     @ManyToOne (fetch = FetchType.LAZY)
     private Inmobiliaria inmobiliaria;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "usuario")
     private Usuario usuario;
 
     @Builder.Default
@@ -63,6 +60,28 @@ public class Vivienda implements Serializable {
         this.titulo = titulo;
         this.avatar = avatar;
         this.codigoPostal = codigoPostal;
+        this.provincia = provincia;
+        this.tipo = tipo;
+        this.precio = precio;
+        this.numHabitaciones = numHabitaciones;
+        this.metrosCuadrados = metrosCuadrados;
+        this.numBanyos = numBanyos;
+        this.tienePiscina = tienePiscina;
+        this.tieneAscensor = tieneAscensor;
+        this.tieneGaraje = tieneGaraje;
+    }
+
+    public Vivienda(Long id, String titulo, String descripcion, String avatar, String latlng, String direccion, String codigoPostal,
+                    String poblacion, String provincia, String tipo, Double precio, int numHabitaciones, double metrosCuadrados,
+                    int numBanyos, boolean tienePiscina, boolean tieneAscensor, boolean tieneGaraje) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.avatar = avatar;
+        this.latlng = latlng;
+        this.direccion = direccion;
+        this.codigoPostal = codigoPostal;
+        this.poblacion = poblacion;
         this.provincia = provincia;
         this.tipo = tipo;
         this.precio = precio;

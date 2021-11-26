@@ -1,6 +1,7 @@
 package edu.salesianos.triana.RealStateV2.users.model;
 
 
+import edu.salesianos.triana.RealStateV2.model.Inmobiliaria;
 import edu.salesianos.triana.RealStateV2.model.Interesa;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -12,10 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -88,6 +86,9 @@ public class Usuario implements UserDetails {
 
     @Builder.Default
     private LocalDateTime lastPasswordChangeAuthority = LocalDateTime.now();
+    @ManyToOne
+    @JoinColumn(name = "inmobiliaria_id")
+    private Inmobiliaria inmobiliaria;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
@@ -122,8 +123,31 @@ public class Usuario implements UserDetails {
         return true;
     }
 
+    public Usuario(String nombre, String apellidos, String direccion, String email, String telefono, String avatar) {
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.direccion = direccion;
+        this.email = email;
+        this.telefono = telefono;
+        this.avatar = avatar;
+    }
+
+    public void addInmobiliaria(Inmobiliaria i) {
+        this.inmobiliaria = i;
+        i.getGestores().add(this);
+    }
+
+    public void removeInmobiliaria(Inmobiliaria i) {
+        i.getGestores().remove(this);
+        this.inmobiliaria = null;
+    }
 
 
+    public Object getRol() {
+        return null;
+    }
 
-
+    public Optional<Object> getListaViviendas() {
+        return null;
+    }
 }

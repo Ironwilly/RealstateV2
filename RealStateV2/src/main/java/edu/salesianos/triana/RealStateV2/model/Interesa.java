@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 
 @Entity
@@ -35,7 +36,6 @@ public class Interesa implements Serializable {
 
     @CreatedDate
     private LocalDateTime createDate;
-
     @Lob
     private String mensaje;
 
@@ -66,6 +66,16 @@ public class Interesa implements Serializable {
         this.usuario = null;
     }
 
+    public void addToInteresado(Usuario u){
+        this.usuario = u;
+        if (u.getListInteresa() == null){
+            u.setListInteresa(new ArrayList<>());
+            u.getListInteresa().add(this);
+
+        }
+        u.getListInteresa().add(this);
+    }
+
     public void addViviendaToUsuario(Vivienda v, Usuario u){
         addToVivienda(v);
         addToUsuario(u);
@@ -74,6 +84,11 @@ public class Interesa implements Serializable {
     public void  deleteViviendaFromUsuario(Vivienda v,Usuario u){
         deleteFromVivienda(v);
         deleteFromUsuario(u);
+    }
+
+    public void deleteFromInteresado(Usuario u){
+        u.getListInteresa().remove(this);
+        this.usuario = null;
     }
 
 }
