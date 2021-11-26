@@ -3,6 +3,7 @@ package edu.salesianos.triana.RealStateV2.users.model;
 
 import edu.salesianos.triana.RealStateV2.model.Inmobiliaria;
 import edu.salesianos.triana.RealStateV2.model.Interesa;
+import edu.salesianos.triana.RealStateV2.model.Vivienda;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
@@ -43,7 +44,7 @@ import lombok.NoArgsConstructor;
 public class Usuario implements UserDetails {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "UUID",strategy = GenerationType.IDENTITY)
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator",
@@ -83,6 +84,14 @@ public class Usuario implements UserDetails {
 
     @CreatedDate
     private LocalDateTime createDateAuthority;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "usuario")
+    private List<Interesa> interesas = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vivienda> listaViviendas = new ArrayList<>();
 
     @Builder.Default
     private LocalDateTime lastPasswordChangeAuthority = LocalDateTime.now();
@@ -143,11 +152,7 @@ public class Usuario implements UserDetails {
     }
 
 
-    public Object getRol() {
-        return null;
-    }
 
-    public Optional<Object> getListaViviendas() {
-        return null;
-    }
+
+
 }

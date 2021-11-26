@@ -1,5 +1,6 @@
 package edu.salesianos.triana.RealStateV2.model;
 
+import edu.salesianos.triana.RealStateV2.users.model.Roles;
 import edu.salesianos.triana.RealStateV2.users.model.Usuario;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class Vivienda implements Serializable {
 
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     private String titulo;
@@ -69,6 +70,14 @@ public class Vivienda implements Serializable {
         this.tienePiscina = tienePiscina;
         this.tieneAscensor = tieneAscensor;
         this.tieneGaraje = tieneGaraje;
+    }
+
+    public void addPropietario(Usuario u) {
+
+        if(u.getRole().equals(Roles.PROPIERTARIO)) this.usuario = u;
+        if (u.getListaViviendas() == null)
+            u.setListaViviendas(new ArrayList<>());
+        u.getListaViviendas().add(this);
     }
 
     public Vivienda(Long id, String titulo, String descripcion, String avatar, String latlng, String direccion, String codigoPostal,

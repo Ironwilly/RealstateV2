@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -76,30 +77,31 @@ public class ViviendaController {
             @RequestParam("codigoPostal") Optional<String> codigoPostal,
             @RequestParam("provincia") Optional<String> provincia,
             @RequestParam("numHabitaciones") Optional<Integer> numHabitaciones,
-            @RequestParam("metrosCuadrados") Optional<Double> metrosCuadrados,
-            @RequestParam("precio") Optional<Double> precio,
-            @PageableDefault(size = 10,page = 0) Pageable pageable, HttpServletRequest request){
-
+            @RequestParam("metrosCuadradosMin") Optional<Double> metrosCuadradosMin,
+            @RequestParam("metrosCuadradosMax") Optional<Double> metrosCuadradosMax,
+            @RequestParam("precioMin") Optional<Double> precioMin,
+            @RequestParam("precioMax") Optional<Double> precioMax,
+            @PageableDefault(size = 10, page = 0) Pageable pageable, HttpServletRequest request) {
 
         Page<Vivienda> result = viviendaService.findByArgs(tipo, ciudad, codigoPostal, provincia,
-                numHabitaciones, metrosCuadrados,precio, pageable);
+                numHabitaciones, metrosCuadradosMin, metrosCuadradosMax, precioMin, precioMax, pageable);
 
-        if(result.isEmpty()){
+        if (result.isEmpty()) {
             return ResponseEntity
                     .noContent()
                     .build();
-        }
-        else{
+        } else {
             UriComponentsBuilder uriBuilder = UriComponentsBuilder
                     .fromHttpUrl(request.getRequestURL().toString());
             return ResponseEntity
                     .ok()
-                    .header("link",paginationUtilsLinks.createLinkHeader(result,uriBuilder))
+                    .header("link", paginationUtilsLinks.createLinkHeader(result, uriBuilder))
                     .body(result.stream()
                             .map(listViviendaDtoConverter::viviendaToGetViviendaDto)
                             .collect(Collectors.toList()));
         }
     }
+
 
 
     @Operation(summary = "Optiene los detalles de la vivienda elegida por el usuario")
@@ -128,7 +130,8 @@ public class ViviendaController {
     @PutMapping("{id}")
     public ResponseEntity<Vivienda> edit (@RequestBody Vivienda v, @PathVariable Long id, @AuthenticationPrincipal Usuario usuarioAuth) {
 
-        if (!usuarioAuth.getRol().equals(Roles.ADMIN) && !viviendaService.findById(id).get().getUsuario().getId().equals(usuarioAuth.getId())) {
+
+        if (!usuarioAuth.getRole().equals(Roles.ADMIN) && !viviendaService.findById(id).get().getUsuario().getId().equals(usuarioAuth.getId())) {
             return ResponseEntity.notFound().build();
 
         } else {
@@ -141,13 +144,11 @@ public class ViviendaController {
                         m.setCodigoPostal(v.getCodigoPostal());
                         m.setLatlng(v.getLatlng());
                         m.setMetrosCuadrados(v.getMetrosCuadrados());
-                        m.setNumBanios(v.getNumBanios());
                         m.setNumHabitaciones(v.getNumHabitaciones());
                         m.setPoblacion(v.getPoblacion());
                         m.setPrecio(v.getPrecio());
                         m.setProvincia(v.getProvincia());
                         m.setDireccion(v.getDireccion());
-                        m.setTipoVivienda(v.getTipoVivienda());
                         m.setTienePiscina(v.isTienePiscina());
                         m.setTieneAscensor(v.isTieneAscensor());
                         m.setTieneGaraje(v.isTieneGaraje());
@@ -158,6 +159,32 @@ public class ViviendaController {
             );
         }
 
+    }
+    @Operation(summary = "Se crea nueva vivienda con propietario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha creado la nueva vivienda",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Vivienda.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha creado la nueva vivienda",
+                    content = @Content),
+    })
+    @PostMapping("/")
+    public ResponseEntity<Vivienda> createVivienda(@RequestBody Vivienda vivienda, @AuthenticationPrincipal Usuario usuarioAuth) {
+
+        if (vivienda.getTitulo().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        } else {
+
+
+                vivienda.addPropietario(usuarioAuth);
+            viviendaService.save(vivienda);
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(vivienda);
+        }
     }
 
     @Operation(summary = "Borra una vivienda")
@@ -204,6 +231,8 @@ public class ViviendaController {
         }
 
     }
+
+
 
 
 

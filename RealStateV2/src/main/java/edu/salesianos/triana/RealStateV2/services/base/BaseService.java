@@ -1,8 +1,11 @@
 package edu.salesianos.triana.RealStateV2.services.base;
 
+import edu.salesianos.triana.RealStateV2.model.Vivienda;
 import edu.salesianos.triana.RealStateV2.users.dto.CreateUserDto;
 import edu.salesianos.triana.RealStateV2.users.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -45,5 +48,5 @@ public abstract class BaseService<T,ID, R extends JpaRepository<T,ID>> {
     }
 
 
-    public abstract Optional<Usuario> loadUserById(UUID id);
+   
 }

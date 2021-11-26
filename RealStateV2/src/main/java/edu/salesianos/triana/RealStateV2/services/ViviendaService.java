@@ -1,7 +1,10 @@
 package edu.salesianos.triana.RealStateV2.services;
 
 import edu.salesianos.triana.RealStateV2.model.Vivienda;
+import edu.salesianos.triana.RealStateV2.repositorios.ViviendaRepository;
 import edu.salesianos.triana.RealStateV2.services.base.BaseService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,18 +18,18 @@ import javax.persistence.criteria.Predicate;
 
 
 @Service
-public class ViviendaService extends BaseService {
+public class ViviendaService extends BaseService<Vivienda,Long, ViviendaRepository> {
 
-    public void findByArgs(final Optional<String> tipo,
-                           final Optional<String> ciudad,
-                           final Optional<String> codigoPostal,
-                           final Optional<String> provincia,
-                           final Optional<Integer> numHabitaciones,
-                           final Optional<Double> metrosCuadradosMin,
-                           final Optional<Double> metrosCuadradosMax,
-                           final Optional<Double> precioMin,
-                           final Optional<Double> precioMax
-    ) {
+    public Page<Vivienda> findByArgs(final Optional<String> tipo,
+                                     final Optional<String> ciudad,
+                                     final Optional<String> codigoPostal,
+                                     final Optional<String> provincia,
+                                     final Optional<Integer> numHabitaciones,
+                                     final Optional<Double> metrosCuadradosMin,
+                                     final Optional<Double> metrosCuadradosMax,
+                                     final Optional<Double> precioMin,
+                                     final Optional<Double> precioMax,
+                                     Pageable pageable) {
 
         Specification<Vivienda> specTipoVivienda = new Specification<Vivienda>() {
 
@@ -142,12 +145,30 @@ public class ViviendaService extends BaseService {
 
             @Override
             public Predicate toPredicate(Root<Vivienda> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (precioMin.isPresent()) {
-                    return criteriaBuilder.greaterThanOrEqualTo(root.get("precio"), precioMin.get());
-                } else {
+                if(precioMin.isPresent()){
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get("precio"),precioMin.get());
+                }
+                else{
                     return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
                 }
             }
         };
+
+        Specification<Vivienda> todos = specCiudadVivienda
+                .and(specCodigoPostalVivienda)
+                .and(specMetrosCuadradosMayorQue)
+                .and(specMetrosCuadradosMenorQue)
+                .and(specNumHabitacionesMayorQue)
+                .and(specNumHabitacionesMenorQue)
+                .and(specPrecioMayorQue)
+                .and(specPrecioMenorQue)
+                .and(specProvinciaVivienda)
+                .and(specTipoVivienda);
+
+        return this.repositorio.findAll(todos,pageable);
+
     }
+
+
+
 }

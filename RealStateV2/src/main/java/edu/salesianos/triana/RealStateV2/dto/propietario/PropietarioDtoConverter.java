@@ -40,10 +40,19 @@ public class PropietarioDtoConverter {
                 .direccion(p.getDireccion())
                 .email(p.getEmail())
                 .telefono(p.getTelefono())
-                .viviendas(p.getListaViviendas().stream().map(v -> new GetViviendaDto(v.getId(),v.getTitulo()
-                        ,v.getProvincia(),
-                        , v.getNumHabitaciones(),v.getMetrosCuadrados(),v.getPrecio()
-                        ,v.getDescripcion(),v.getAvatar())).toList())
+                .viviendas(p.getListaViviendas().stream().map(v -> new GetViviendaDto(
+                        v.getId(),
+                        v.getTitulo()
+                        ,v.getDescripcion()
+                        , v.getAvatar(),
+                        v.getProvincia(),
+                        v.getPrecio()
+                        ,v.getNumHabitaciones(),
+                        v.getMetrosCuadrados()
+                ))
+                        .toList())
                 .build();
     }
+
+
 }

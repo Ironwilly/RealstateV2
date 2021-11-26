@@ -3,6 +3,7 @@ package edu.salesianos.triana.RealStateV2.controller;
 
 import edu.salesianos.triana.RealStateV2.dto.propietario.GetPropietarioViviendaDto;
 import edu.salesianos.triana.RealStateV2.dto.propietario.PropietarioDtoConverter;
+import edu.salesianos.triana.RealStateV2.users.model.Roles;
 import edu.salesianos.triana.RealStateV2.users.model.Usuario;
 import edu.salesianos.triana.RealStateV2.users.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.relation.Role;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,9 +31,9 @@ public class PropietarioController {
 
     private final UsuarioService usuarioService;
     private final PropietarioDtoConverter propietarioDtoConverter;
-    private Object RolUsuario;
 
-    /*
+
+
     @Operation(summary = "Muestra un propietario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -46,7 +48,7 @@ public class PropietarioController {
     public ResponseEntity<List<GetPropietarioViviendaDto>> findOne(@PathVariable UUID id, @AuthenticationPrincipal Usuario usuarioAuth){
         Optional<Usuario> propietario = usuarioService.loadUserById(id);
 
-        if(!usuarioService.loadUserById(id).isEmpty() && !usuarioAuth.getRol().equals(RolUsuario.ADMIN) && !propietario.get().getId().equals(usuarioAuth.getId())){
+        if(!usuarioService.loadUserById(id).isEmpty() && !usuarioAuth.getRole().equals(Roles.ADMIN) && !propietario.get().getId().equals(usuarioAuth.getId())){
             return ResponseEntity.notFound().build();
         }
         else{
@@ -71,7 +73,7 @@ public class PropietarioController {
 
         Optional<Usuario> propietario = usuarioService.loadUserById(id);
 
-        if(!usuarioService.loadUserById(id).isEmpty() && !usuarioAuth.getRol().equals(RolUsuario.ADMIN) && !propietario.get().getId().equals(usuarioAuth.getId())){
+        if(!usuarioService.loadUserById(id).isEmpty() && !usuarioAuth.getRole().equals(Roles.ADMIN) && !propietario.get().getId().equals(usuarioAuth.getId())){
             return ResponseEntity.status(403).build();
         }
         else {
@@ -83,7 +85,7 @@ public class PropietarioController {
 
     }
 
-     */
+
 
 
 }
