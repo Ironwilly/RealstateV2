@@ -33,7 +33,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -231,6 +233,30 @@ public class ViviendaController {
         }
 
     }
+
+
+
+
+    @GetMapping("/propietario")
+
+    public ResponseEntity<?> findAllViviendaWithPropietarioLogado(@AuthenticationPrincipal Usuario usuarioAuth){
+
+
+        if(!usuarioService.loadUserById(id).isEmpty() && !usuarioAuth.getRole().equals(Roles.PROPIERTARIO) && !propietario.get().getId().equals(usuarioAuth.getId())) {
+            return ResponseEntity.notFound().build();
+        }else{
+            List<Vivienda> viviendas = propietario.get().getListaViviendas();
+            return ResponseEntity.ok().body(propietario);
+        }
+
+
+
+
+
+    }
+
+
+
 
 
 

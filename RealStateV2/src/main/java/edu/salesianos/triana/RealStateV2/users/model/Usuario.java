@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -23,6 +24,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Parameter;
 
 
@@ -44,7 +46,7 @@ import lombok.NoArgsConstructor;
 public class Usuario implements UserDetails {
 
     @Id
-    @GeneratedValue(generator = "UUID",strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID", strategy = GenerationType.IDENTITY)
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator",
@@ -56,7 +58,7 @@ public class Usuario implements UserDetails {
             }
     )
 
-    @Column(name = "id", updatable = false,nullable = false)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @NaturalId
@@ -100,20 +102,19 @@ public class Usuario implements UserDetails {
     private Inmobiliaria inmobiliaria;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
 
     }
 
     @Override
-    public String getUsername(){
+    public String getUsername() {
         return email;
     }
 
 
-
     @Override
-    public boolean isAccountNonExpired(){
+    public boolean isAccountNonExpired() {
         return true;
     }
 
@@ -150,9 +151,6 @@ public class Usuario implements UserDetails {
         i.getGestores().remove(this);
         this.inmobiliaria = null;
     }
-
-
-
 
 
 }
