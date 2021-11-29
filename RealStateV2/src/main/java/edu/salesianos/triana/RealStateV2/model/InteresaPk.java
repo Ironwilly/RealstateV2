@@ -17,6 +17,6 @@ import java.io.Serializable;
 public class InteresaPk implements Serializable {
 
     private Long vivienda_id;
-    private Long usuario_id;
+    private Long usuario_id; // TODO El tipo del ID del usuario es UUID. Por tanto aquí hay que cambiarlo
 
 }

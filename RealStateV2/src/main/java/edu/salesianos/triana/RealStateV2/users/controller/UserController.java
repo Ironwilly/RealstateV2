@@ -18,6 +18,8 @@ public class UserController {
     private final UsuarioService usuarioService;
     private final UserDtoConverter userDtoConverter;
 
+
+    // TODO ¿Dónde están el resto de registros? ¿El de admin o propietario?
     @PostMapping("/auth/register")
     public ResponseEntity<GetUserDto> nuevoUsuario(@RequestBody CreateUserDto newUser) {
         Usuario saved = usuarioService.save(newUser);
