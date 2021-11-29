@@ -1,9 +1,6 @@
 package edu.salesianos.triana.RealStateV2.controller;
 
-import edu.salesianos.triana.RealStateV2.dto.vivienda.DetailDtoConverter;
-import edu.salesianos.triana.RealStateV2.dto.vivienda.GetDetailViviendaDto;
-import edu.salesianos.triana.RealStateV2.dto.vivienda.GetViviendaDto;
-import edu.salesianos.triana.RealStateV2.dto.vivienda.ListViviendaDtoConverter;
+import edu.salesianos.triana.RealStateV2.dto.vivienda.*;
 import edu.salesianos.triana.RealStateV2.model.Vivienda;
 import edu.salesianos.triana.RealStateV2.pagination.PaginationUtilsLinks;
 import edu.salesianos.triana.RealStateV2.repositorios.InmobiliariaRepository;
@@ -239,16 +236,18 @@ public class ViviendaController {
 
     @GetMapping("/propietario")
 
-    public ResponseEntity<?> findAllViviendaWithPropietarioLogado(@AuthenticationPrincipal Usuario usuarioAuth){
+    public ResponseEntity<List<GetListViviendaDto>> findAllViviendasPropietario(@AuthenticationPrincipal Usuario usuarioAuth){
+        Optional<List<Vivienda>> viviendas = viviendaService.viviendasPro(usuarioAuth);
 
-
-        if(!usuarioService.loadUserById(id).isEmpty() && !usuarioAuth.getRole().equals(Roles.PROPIERTARIO) && !propietario.get().getId().equals(usuarioAuth.getId())) {
-            return ResponseEntity.notFound().build();
+        if(viviendas.isEmpty()){
+            return ResponseEntity.noContent().build();
         }else{
-            List<Vivienda> viviendas = propietario.get().getListaViviendas();
-            return ResponseEntity.ok().body(propietario);
+            return ResponseEntity.ok(
+                    viviendas.get().stream()
+                            .map(listViviendaDtoConverter::viviendaToGetViviendaDto)
+                            .collect(Collectors.toList())
+            );
         }
-
 
 
 

@@ -30,5 +30,8 @@ public interface ViviendaRepository extends JpaRepository<Vivienda, Long>, JpaSp
             )
             from Vivienda v where  v.propietarioId = :id
             """)
-    List<GetListViviendaDto> listViviendaDto(UUID id);
+    List<GetListViviendaDto> viviendasPropi(UUID id);
 }
+
+
+

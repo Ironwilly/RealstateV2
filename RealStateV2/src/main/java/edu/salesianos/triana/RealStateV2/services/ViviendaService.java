@@ -3,14 +3,19 @@ package edu.salesianos.triana.RealStateV2.services;
 import edu.salesianos.triana.RealStateV2.model.Vivienda;
 import edu.salesianos.triana.RealStateV2.repositorios.ViviendaRepository;
 import edu.salesianos.triana.RealStateV2.services.base.BaseService;
+import edu.salesianos.triana.RealStateV2.users.model.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.Id;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import javax.persistence.criteria.Predicate;
 
 
@@ -167,6 +172,10 @@ public class ViviendaService extends BaseService<Vivienda,Long, ViviendaReposito
 
         return this.repositorio.findAll(todos,pageable);
 
+    }
+
+    public Optional<List<Vivienda>> viviendasPro (Usuario usuarioAuth){
+        return repositorio.viviendasPropi(usuarioAuth.getId(UUID));
     }
 
 
